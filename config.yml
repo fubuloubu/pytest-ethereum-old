@@ -1,0 +1,21 @@
+# If available, give location of 'contracts.json' output (from solc/vyper)
+contracts: ./contracts.json
+
+# All items with a !fixture are interpreted
+# Use &contract to reference contract's address elsewhere
+Token: &token !fixture
+    args:
+        _symbol: DEMO
+        _name: Demonstration Token
+        initialSupply: 1000
+
+# De-reference address using *contract syntax
+ICO: !fixture
+    transact:
+        from: !t.a1 # Use different address (default is t.a0)
+        value: 10 # Send value by default (denominated in wei)
+    args:
+        _token: *token # Points to Token fixture's address
+        _softcap: 10
+        _hardcap: 1000
+        _price: 100
