@@ -1,0 +1,7 @@
+# Setuptools stuff
+build/
+dist/
+pytest_ethereum.egg-info/
+
+# Python stuff
+__pycache__/
