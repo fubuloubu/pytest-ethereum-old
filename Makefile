@@ -1,6 +1,9 @@
 install:
 	python setup.py install
 
+test:
+	py.test example/
+
 clean:
 ifneq ($(shell git clean -xdn), )
 	@git clean -xdn
