@@ -1,9 +1,13 @@
 install:
 	python setup.py install
 
+
+# Verify our example project
 test:
 	py.test example/
 
+
+# Checks dry run, then prompts to execute
 clean:
 ifneq ($(shell git clean -xdn), )
 	@git clean -xdn
