@@ -9,4 +9,6 @@ ifneq ($(shell git clean -xdn), )
 	@git clean -xdn
 	@read -p "Do you wish to continue? [y/N] " yn; \
 	 case $$yn in [Yy]* ) git clean -xdf;; esac
+else
+	@echo "Nothing to clean!"
 endif
