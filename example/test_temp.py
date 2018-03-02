@@ -1,61 +1,78 @@
 # Fixtures provided:
-# t: EthereumTester instance
-# contract_tester: fixture to generate Contract instances for testing
-# tx_fails: fixture to help with 'TransactionFailed' test cases
+# tester: web3.EthereumTester instance
+#   .contracts: fixture to retreive Contract instances from assets file
+#   .new_contract: fixture to generate new Contract instances
+#   .tx_fails: fixture to help with 'TransactionFailed' test cases
+def test_stuff(tester, Token):
 
-# Fixtures generated:
-# Anything defined using the '!fixture' parse tag in config.yml
-# (must have deployment arguments defined)
-# e.g. Token
-
-def test_stuff(t, contract_tester, tx_fails, Token):
+    # Get contracts via name from 'contracts.json' file
+    # NOTE: When no contract is selected, uses file basename (e.g. 'Owned')
+    c1 = tester.contracts('path/to/Owned.sol').deploy()
     
-    # Get contract via name from 'contracts.json' file (output of Solidity)
-    # NOTE path to this file set in config.yml
-    c1 = contract_tester(contract='utils/Owned.sol')
-    
-    # You can specify a specific contract in the file (assumes file basename by default)
-    # You must specify the deployment args
-    c2 = contract_tester(contract='utils/TimeLimited.sol:TestTimeLimited', args=[10])
+    # You can specify a specific contract from the file
+    TestContract = tester.contracts('path/to/TimeLimited.sol:TestTimeLimited')
+    # You must specify the deployment args, supplied as an ordered list
+    c2 = TestContract.deploy(args=[10])
 
-    # You can also load a contract ad-hoc via a contract interface
+    # You can also load and deploy a contract ad-hoc via a contract interface
     # Requires interface={'abi': [...], 'bytecode': '0x...', 'bytecode_runtime': '0x...'}
     adhoc_interface = {'abi': [], 'bytecode': '0x0', 'bytecode_runtime': '0x0'}
+    ad_hoc = tester.new_contract(adhoc_interface)
+    
+    # You can deploy it multiple times
+    one = ad_hoc.deploy()
+    another = ad_hoc.deploy()
+    
     # Can supply transact={...} to change deployment transaction params
-    c3 = contract_tester(interface=adhoc_interface, transact={'from': t.a1})
+    c3 = ad_hoc.deploy(transact={'from': tester.account[1]})
 
     # Use normal assert syntax for testing
     # 'constant' functions call by default
-    assert c1.owner() == t.a0
+    assert c1.owner() == tester.account[0]
+    
     # non-'constant' functions transact by default
     # NOTE: Transactions auto-mine (see eth-tester)
-    c1.changeOwner(t.a1)
-    assert c1.owner() == t.a1
+    c1.changeOwner(tester.account[1])
+    assert c1.owner() == tester.account[1]
+    
     # Use this for asserting a failed transaction should occur
-    with tx_fails:
-        c1.changeOwner(t.a0)
+    with tester.tx_fails:
+        c1.changeOwner(tester.account[0])
     
     # You can supply optional transaction params
-    c1.changeOwner(t.a0, transact={'from':t.a1})
-    assert c1.owner() == t.a0
+    c1.changeOwner(tester.account[0], transact={'from': tester.account[1]})
+    assert c1.owner() == tester.account[0]
     
     # You can mine a block
     while c2.alive():
-        t.mine_block()
+        tester.mine_block()
 
     c2.setExpired()
     # You can check to see if a contract still has code
-    assert t.hascode(c2.address)
+    assert tester.hascode(c2.address)
     c2.destroy()  # Calls selfdestruct opcode
-    assert not t.hascode(c2.address)
+    assert not tester.hascode(c2.address)
 
-    # You can do all of these with the generated fixtures too!
-    assert Token.balanceOf(t.a0) >= 100
-    assert Token.balanceOf(t.a1) == 0
-    Token.transfer(t.a1, 100)
-    assert Token.balanceOf(t.a1) == 100
+
+# Create your own fixtures
+import pytest
+@pytest.fixture
+def Token(tester):
+    return tester.contracts('path/to/Token.sol:Token').deploy()
+
+def test_token(tester, Token):
+    # You can do all of these with the your own fixtures too!
+    assert Token.balanceOf(tester.account[0]) >= 100
+    assert Token.balanceOf(tester.account[1]) == 0
+    Token.transfer(tester.account[1], 100)
+    assert Token.balanceOf(tester.account[1]) == 100
+    
     # All contracts (generated or ad-hoc) have an address
     print("Token's address:", Token.address)
+    
     # Get Ether balance of any address
-    print(t.get_balance(t.a0), "Wei")
-    print(t.get_balance(Token.address), "Wei")
+    print(tester.get_balance(tester.account[0]), "Wei")
+
+    # Send any address Ether
+    tester.account[1].send(Token.address, 100)  # send 100 wei
+    print(tester.get_balance(Token.address), "Wei")
