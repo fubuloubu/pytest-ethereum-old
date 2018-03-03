@@ -2,7 +2,7 @@ import os
 from setuptools import setup
 
 # Utility function to read the boilerplate files
-def read(fname):
+def read_md(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
@@ -10,7 +10,7 @@ setup(
     version='0.1.0',
     description='py.test plugin for testing Ethereum smart contracts',
     license='MIT',
-    #long_description=read('README.md'),
+    long_description=read_md('README.md'),
     author='Bryant Eisenbach',
     packages = ['pytest_ethereum'],
     install_requires=[
