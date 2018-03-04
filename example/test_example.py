@@ -22,33 +22,33 @@ def test_stuff(tester):
     another = ad_hoc_factory.deploy()
     
     # Can supply transact={...} to change deployment transaction params
-    ad_hoc_a1 = ad_hoc_factory.deploy(transact={'from': tester.account[1]})
+    ad_hoc_a1 = ad_hoc_factory.deploy(transact={'from': tester.accounts[1]})
     
     # All contracts (generated or ad-hoc) have an address
     print("Ad-Hoc Adress is:", ad_hoc_a1.address)
 
     # Use normal assert syntax for testing
     # pure/view/constant functions call by default
-    assert owned.owner() == tester.account[0]  # Doesn't mine a block!
+    assert owned.owner() == tester.accounts[0]  # Doesn't mine a block!
     
     # non-'constant' functions transact by default
     # NOTE: Transactions auto-mine (see eth-tester)
-    owned.changeOwner(tester.account[1])  # Transaction auto-mined into block
-    assert owned.owner() == tester.account[1]  # No transaction here
+    owned.changeOwner(tester.accounts[1])  # Transaction auto-mined into block
+    assert owned.owner() == tester.accounts[1]  # No transaction here
     
     # Use this for asserting when a failed transaction should occur
     with tester.tx_fails:
-        owned.changeOwner(tester.account[0])  # account[0] is no longer the owner!
+        owned.changeOwner(tester.accounts[0])  # account 0 is no longer the owner!
     
     # You can supply optional transaction params
-    owned.changeOwner(tester.account[0],
+    owned.changeOwner(tester.accounts[0],
             transact={
-                'from': tester.account[1],  # from a different sender
+                'from': tester.accounts[1],  # from a different sender
                 #'value': 100,  # send 100 wei in this transaction
                 # You can also do other things... see web3.py for more info!
             }
         )
-    assert owned.owner() == tester.account[0]  # account[0] is the owner again!
+    assert owned.owner() == tester.accounts[0]  # account[0] is the owner again!
     
     # You can mine an empty block if you want
     while timelimited.alive():  # This makes a call, so no transaction occurs
@@ -62,15 +62,15 @@ def test_stuff(tester):
     assert not timelimited.hascode
     
     # Get Ether balance of any address
-    print("Account 0 has", tester.account[0].balance, "Wei")
-    print("Account 1 has", tester.account[1].balance, "Wei")
+    print("Account 0 has", tester.accounts[0].balance, "Wei")
+    print("Account 1 has", tester.accounts[1].balance, "Wei")
     print("Contract 'timelimited' has", timelimited.address.balance, "Wei")
 
     # Send any address Ether
-    print(tester.get_balance(tester.account[2]), "Wei")
-    print("Account 2 has", tester.account[2].balance, "Wei")
-    tester.account[1].send(tester.account[2], 100)  # send 100 wei to address 2
-    print("Account 2 now has", tester.account[2].balance, "Wei")
+    print(tester.get_balance(tester.accounts[2]), "Wei")
+    print("Account 2 has", tester.accounts[2].balance, "Wei")
+    tester.accounts[1].send(tester.accounts[2], 100)  # send 100 wei to address 2
+    print("Account 2 now has", tester.accounts[2].balance, "Wei")
 
 
 # Constants for Token
@@ -92,10 +92,10 @@ def Token(tester):
 
 def test_token(tester, Token):
     # You can do all of these with the your own fixtures too!
-    assert Token.balanceOf(tester.account[0]) == INITIAL_SUPPLY
-    assert Token.balanceOf(tester.account[1]) == 0
-    Token.transfer(tester.account[1], INITIAL_SUPPLY)
-    assert Token.balanceOf(tester.account[1]) == INITIAL_SUPPLY
+    assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY
+    assert Token.balanceOf(tester.accounts[1]) == 0
+    Token.transfer(tester.accounts[1], INITIAL_SUPPLY)
+    assert Token.balanceOf(tester.accounts[1]) == INITIAL_SUPPLY
 
 
 @pytest.fixture
@@ -106,4 +106,4 @@ def ICO(tester, Token):
 
 def test_ico(tester, Token, ICO):
     # NOTE: Token is not the same deployment as the one in test_token!
-    assert Token.balanceOf(tester.account[0]) == INITIAL_SUPPLY
+    assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY
