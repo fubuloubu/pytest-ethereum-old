@@ -18,7 +18,7 @@ setup(
     packages = ['pytest_ethereum'],
     install_requires=[
         'pytest>=3.4.1',
-        'eth-tester[py-evm]',
+        'eth-tester[pyethereum21]',  # eventually switch to py-evm backend
         'web3>=4.0.0b11',
     ],
 
