@@ -18,13 +18,14 @@ setup(
     packages = ['pytest_ethereum'],
     install_requires=[
         'pytest>=3.4.1',
+        'eth-tester[py-evm]',
         'web3>=4.0.0b11',
     ],
 
     # the following makes a plugin available to pytest
     entry_points = {
         'pytest11': [
-            'name_of_plugin = pytest_ethereum.pluginmodule',
+            'name_of_plugin = pytest_ethereum.plugin',
         ]
     },
 
