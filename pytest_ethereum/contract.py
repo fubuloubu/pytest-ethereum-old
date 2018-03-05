@@ -24,6 +24,7 @@ class ContractInstance:
             return getattr(self, name)
         else:
             # Method call of contract instance
+            #TODO: This doesn't work!
             return getattr(self.__instance, name)
 
     @property
@@ -48,7 +49,7 @@ class ContractInstance:
 
     @property
     def logs(self):
-        """Returns all the event logs created (since last polled) of this contract"""
+        """Returns all the event logs added since last checked for this contract"""
         return self.__logs.get()
 
 
@@ -62,7 +63,7 @@ class ContractFactory:
     def deploy(self, *args, **kwargs):
         """Deploy a new instance of this contract"""
 
-        # TODO: HACK, awaiting resolution of web3.py/#666
+        #TODO: HACK, awaiting resolution of web3.py/#666
         if 'transact' in kwargs.keys():
             kwargs['transaction'] = kwargs['transact']
             del kwargs['transact']

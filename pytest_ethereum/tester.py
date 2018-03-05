@@ -15,8 +15,8 @@ class Tester:
         # Empty by default, but can be set on initialization
         self.__compiled_interfaces = compiled_interfaces
         
-        # TODO Set starting balance for all accounts and gas limit for chain
-        # NOTE Chain auto-mines transactions vs before
+        # TODO Set starting balance for all accounts to something very high
+        #      and blk gas limit for chain to something approaching average
 
     def contracts(self, name):
         if ':' not in name:
@@ -36,10 +36,4 @@ class Tester:
     def tx_fails(self):
         return pytest.raises(TransactionFailed)
 
-    # TODO Potentially replace with TestContract.pastEvents
-    def get_log(contract, event_name):
-        #TODO Filter by contract and event_name
-        #     contract either by address or ABI
-        filter_id = t.create_log_filter()
-        #TODO Should return decoded event log receipt
-        return t.get_only_fiter_changes(filter_id)
+    #TODO Evaluate if additional logging methods are necessary
