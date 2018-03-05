@@ -68,6 +68,7 @@ class ContractFactory:
             del kwargs['transact']
 
         # Our encapsulating classes need to be evaluated here
+        # in order to avoid bugs when web3 processes our modifiers
         kwargs = clean_modifiers(kwargs)
 
         tx_hash = self.__contract_factory.deploy(args=args, **kwargs)
