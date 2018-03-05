@@ -1,3 +1,5 @@
+import pytest
+
 from web3 import Web3
 from web3.providers.eth_tester import EthereumTesterProvider
 
@@ -35,5 +37,8 @@ class Tester:
     @property
     def tx_fails(self):
         return pytest.raises(TransactionFailed)
+
+    def mine_blocks(self, number=1):
+        self.__t.mine_blocks(number)
 
     #TODO Evaluate if additional logging methods are necessary
