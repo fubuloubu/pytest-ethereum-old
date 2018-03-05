@@ -1,6 +1,8 @@
 from web3 import Web3
 from web3.contract import ImplicitContract
 
+from .utils import clean_modifiers
+
 
 class ContractInstance:
     """Deployed instance of a contract"""
@@ -59,6 +61,15 @@ class ContractFactory:
 
     def deploy(self, *args, **kwargs):
         """Deploy a new instance of this contract"""
+
+        # TODO: HACK, awaiting resolution of web3.py/#666
+        if 'transact' in kwargs.keys():
+            kwargs['transaction'] = kwargs['transact']
+            del kwargs['transact']
+
+        # Our encapsulating classes need to be evaluated here
+        kwargs = clean_modifiers(kwargs)
+
         tx_hash = self.__contract_factory.deploy(args=args, **kwargs)
         address = self.__w3.eth.getTransactionReceipt(tx_hash)['contractAddress']
         return ContractInstance(self.__w3, address, self.__interface)
