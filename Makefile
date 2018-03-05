@@ -3,8 +3,9 @@ install:
 
 
 # Verify our example project
+.PHONY: example
 example:
-	py.test example/
+	py.test --assets-file example/contracts.json example/
 
 upload: install
 	twine upload dist/*
