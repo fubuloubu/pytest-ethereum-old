@@ -17,8 +17,9 @@ def pytest_addoption(parser):
 @pytest.fixture(scope='session')
 def assets(pytestconfig):
     assets = {}
-    if config.ethereum.assets_file:
-        assets = get_assets(config.ethereum.assets_file)
+    assets_file = pytestconfig.option.assets_file
+    if assets_file:
+        assets = get_assets(assets_file)
     return assets
 
 
