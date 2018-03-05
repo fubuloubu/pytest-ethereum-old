@@ -5,3 +5,6 @@ pytest_ethereum.egg-info/
 
 # Python stuff
 __pycache__/
+
+# py.test stuff
+.pytest_cache/
