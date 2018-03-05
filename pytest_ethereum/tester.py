@@ -1,5 +1,3 @@
-import pytest
-
 from web3 import Web3
 from web3.contract import ImplicitContract
 from web3.providers.eth_tester import EthereumTesterProvider
@@ -9,14 +7,14 @@ from eth_tester.exceptions import TransactionFailed
 
 from .account import Account
 from .contract import ContractFactory
-from .asset_loader import get_assets
 
 
 class Tester:
-    def __init__(self):
+    def __init__(self, compiled_interfaces):
         self._t = EthereumTester()
         self._w3 = Web3(EthereumTesterProvider(self._t))
-        self._compiled_interfaces = get_assets()  # This needs to somehow be configurable
+        # Empty by default, but can be set on initialization
+        self._compiled_interfaces = compiled_interfaces
         
         # TODO Set starting balance for all accounts and gas limit for chain
         # NOTE Chain auto-mines transactions vs before
@@ -46,8 +44,3 @@ class Tester:
         filter_id = t.create_log_filter()
         #TODO Should return decoded event log receipt
         return t.get_only_fiter_changes(filter_id)
-
-
-@pytest.fixture
-def tester():
-    return Tester()
