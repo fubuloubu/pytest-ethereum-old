@@ -73,18 +73,19 @@ def test_stuff(tester):
     print("Account 2 now has", tester.accounts[2].balance, "Wei")
 
 
+import pytest
+
+
 # Constants for Token
 SYMBOL = 'TEST'
 NAME = 'Test Token'
 DECIMALS = 0
 INITIAL_SUPPLY = 100
 
-import pytest
-
 # You can also create your own fixtures!
 @pytest.fixture
 def Token(tester):
-    args = [SYMBOL, NAME, DECIMALS, INITAL_SUPPLY]  # for convienence
+    args = [SYMBOL, NAME, DECIMALS, INITIAL_SUPPLY]  # for convienence
     token = tester.contracts('path/to/Token.sol').deploy(*args)  
     print("Token deployed at", token.address)
     return token
@@ -98,10 +99,17 @@ def test_token(tester, Token):
     assert Token.balanceOf(tester.accounts[1]) == INITIAL_SUPPLY
 
 
+# Constants for ICO
+TOKEN_PRICE = 100  # 100 wei/token
+HARDCAP = INITIAL_SUPPLY  # Max tokens for sale
+SOFTCAP = 10  # Min tokens for successful sale
+DURATION = 10  # active blocks
+
 @pytest.fixture
 def ICO(tester, Token):
     # If you need to link fixtures together, you can!
-    return tester.contracts('path/to/ICO.sol').deploy(Token.address)
+    args = [TOKEN_PRICE, HARDCAP, SOFTCAP, DURATION, Token.address]
+    return tester.contracts('path/to/ICO.sol').deploy(*args)
 
 
 def test_ico(tester, Token, ICO):
