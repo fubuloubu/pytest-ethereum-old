@@ -33,12 +33,12 @@ class ContractInstance:
     @property
     def balance(self):
         """Ether balance of this contract (in wei)"""
-        return self.__w3.eth.getBalance(self.address)
+        return self.__w3.eth.getBalance(self.__address)
 
     @property
     def codesize(self):
         """Codesize of this contract (in bytes)"""
-        return len(self.__w3.eth.getCode(self.address)[2:])/2
+        return len(self.__w3.eth.getCode(self.__address)[2:])/2
 
     @property
     def hascode(self):
