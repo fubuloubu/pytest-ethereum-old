@@ -97,7 +97,8 @@ def test_token(tester, Token):
     assert Token.balanceOf(tester.accounts[1]) == 0
     Token.transfer(tester.accounts[1], INITIAL_SUPPLY)
     assert Token.balanceOf(tester.accounts[1]) == INITIAL_SUPPLY
-
+    Transfer
+    Approval
 
 # Constants for ICO
 TOKEN_PRICE = 100  # 100 wei/token
@@ -115,3 +116,5 @@ def ICO(tester, Token):
 def test_ico(tester, Token, ICO):
     # NOTE: Token is not the same deployment as the one in test_token!
     assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY
+    TokenBuy
+    TokenRefund
