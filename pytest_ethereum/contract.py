@@ -14,8 +14,6 @@ class ContractInstance:
                 ContractFactoryClass=ImplicitContract)
         # Register new filter to watch for logs from this instance's address
         self.__filter = self.__w3.eth.filter({'address': self.__address})
-        #TODO: Figure out Web3.py logs API
-        #self.__logs = self.__w3.utils.filters.LogFilter(self.__filter)
 
     def __getattr__(self, name):
         """Delegates to either specialized methods or instance ABI"""
@@ -48,9 +46,13 @@ class ContractInstance:
         return self.codesize != 0
 
     @property
-    def logs(self):
+    def new_logs(self):
         """Returns all the event logs added since last checked for this contract"""
-        return self.__logs.get()
+        return self.__filter.get_new_entries()
+
+    @property
+    def all_logs(self):
+        return self.__filter.get_all_entries()
 
 
 class ContractFactory:
