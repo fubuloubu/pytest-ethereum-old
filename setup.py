@@ -7,10 +7,10 @@ def read_md(fname):
 
 setup(
     name="pytest-ethereum",
-    version='0.1.0a2',
+    version='0.1.0a3',
     description='py.test plugin for testing Ethereum smart contracts',
     license='MIT',
-    long_description=read_md('README.md'),
+    #long_description=read_md('README.md'),
     author='Bryant Eisenbach',
     author_email='bryant@dappdevs.org',
     url='https://github.com/fubuloubu/pytest-ethereum',
