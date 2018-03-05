@@ -1,22 +1,12 @@
 from web3 import Web3
 
 
-class Account:
-    def __init__(self, w3: Web3, address):
-        self._w3 = w3
-        self._address = address
-
-    def __repr__(self):
-        return self._address
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __ne__(self, other):
-        return self.__repr__().__ne__(other)
-
-    def __eq__(self, other):
-        return self.__repr__().__eq__(other)
+class Account(str):
+    def __new__(cls, w3: Web3, address):
+        obj = super().__new__(cls, address)
+        obj._w3 = w3
+        obj._address = address
+        return obj
 
     # Send Ether
     def send(self, address, amount):
@@ -24,4 +14,4 @@ class Account:
 
     @property
     def balance(self):
-        return self._w3.getBalance(self._address)
+        return self._w3.eth.getBalance(self._address)
