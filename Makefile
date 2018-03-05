@@ -3,9 +3,11 @@ install:
 
 
 # Verify our example project
-test:
+example:
 	py.test example/
 
+upload: install
+	twine upload dist/*
 
 # Checks dry run, then prompts to execute
 clean:
