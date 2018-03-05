@@ -52,7 +52,7 @@ def test_stuff(tester):
     
     # You can mine an empty block if you want
     while timelimited.alive():  # This makes a call, so no transaction occurs
-        tester.mine_block()  # mines an empty block
+        tester.mine_blocks()  # mines an empty block
 
     timelimited.setExpired()
     # You can check to see if a contract still has code
@@ -64,10 +64,9 @@ def test_stuff(tester):
     # Get Ether balance of any address
     print("Account 0 has", tester.accounts[0].balance, "Wei")
     print("Account 1 has", tester.accounts[1].balance, "Wei")
-    print("Contract 'timelimited' has", timelimited.address.balance, "Wei")
+    print("Contract 'timelimited' has", timelimited.balance, "Wei")
 
     # Send any address Ether
-    print(tester.get_balance(tester.accounts[2]), "Wei")
     print("Account 2 has", tester.accounts[2].balance, "Wei")
     tester.accounts[1].send(tester.accounts[2], 100)  # send 100 wei to address 2
     print("Account 2 now has", tester.accounts[2].balance, "Wei")
@@ -97,8 +96,9 @@ def test_token(tester, Token):
     assert Token.balanceOf(tester.accounts[1]) == 0
     Token.transfer(tester.accounts[1], INITIAL_SUPPLY)
     assert Token.balanceOf(tester.accounts[1]) == INITIAL_SUPPLY
-    Transfer
-    Approval
+    # Test these events:
+    #Transfer
+    #Approval
 
 # Constants for ICO
 TOKEN_PRICE = 100  # 100 wei/token
@@ -116,5 +116,6 @@ def ICO(tester, Token):
 def test_ico(tester, Token, ICO):
     # NOTE: Token is not the same deployment as the one in test_token!
     assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY
-    TokenBuy
-    TokenRefund
+    # Test these events:
+    #TokenBuy
+    #TokenRefund
