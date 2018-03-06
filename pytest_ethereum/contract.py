@@ -67,10 +67,11 @@ class ContractInstance:
         return self._process_logs(self.__filter.get_all_entries())
 
     def gen_log(self, eventname, **kwargs):
+        #TODO Validate kwargs exactly match ABI for eventname
         new_log = {}
         new_log['event'] = eventname
         new_log['args'] = kwargs
-        # NOTE: Don't need the rest of the stuff to generate this class
+        # Don't need the extra stuff to generate an event Log
         return Log(new_log)
 
 
