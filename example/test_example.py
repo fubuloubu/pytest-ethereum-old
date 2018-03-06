@@ -85,9 +85,7 @@ INITIAL_SUPPLY = 100
 @pytest.fixture
 def Token(tester):
     args = [SYMBOL, NAME, DECIMALS, INITIAL_SUPPLY]  # for convienence
-    token = tester.contracts('path/to/Token.sol').deploy(*args)  
-    print("Token deployed at", token.address)
-    return token
+    return tester.contracts('path/to/Token.sol').deploy(*args)
 
 
 def test_token(tester, Token):
@@ -96,19 +94,28 @@ def test_token(tester, Token):
     # Test Token.transfer()
     assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY
     assert Token.balanceOf(tester.accounts[1]) == 0
-    Token.transfer(tester.accounts[1], INITIAL_SUPPLY)  # Creates a log
-    assert Token.balanceOf(tester.accounts[1]) == INITIAL_SUPPLY
+    Token.transfer(tester.accounts[1], 10)  # Creates a log
+    assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY - 10
+    assert Token.balanceOf(tester.accounts[1]) == 10
     # Create a Transfer log to check against
     expected_log = Token.gen_log('Transfer',
             # Below is all the members of the event
             _from=tester.accounts[0],
             _to=tester.accounts[1],
-            _value=INITIAL_SUPPLY
+            _value=10
         )
-    # Test transfer's event
+    # Test transfer's event against the expected value
     assert Token.new_logs[-1] == expected_log
 
-    #Approval
+    # Note: Contract.new_logs resets everytime it's polled
+    assert len(Token.new_logs) == 0
+
+    # You can also check individual fields
+    Token.approve(tester.accounts[2], 10)
+    Approval = Token.new_logs[-1]
+    assert Approval['_owner'] == tester.accounts[0]
+    assert Approval['_spender'] == tester.accounts[2]
+    assert Approval['_value'] == 10
 
 # Constants for ICO
 TOKEN_PRICE = 100  # 100 wei/token
@@ -122,10 +129,34 @@ def ICO(tester, Token):
     args = [TOKEN_PRICE, HARDCAP, SOFTCAP, DURATION, Token.address]
     return tester.contracts('path/to/ICO.sol').deploy(*args)
 
-
+import random
 def test_ico(tester, Token, ICO):
     # NOTE: Token is not the same deployment as the one in test_token!
     assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY
-    # Test these events:
-    #TokenBuy
-    #TokenRefund
+
+    Token.approve(ICO.address, ICO.hardCap())
+    ICO.startICO()  # Let's get this party started!
+
+    # Pre-Sale!
+    tp = ICO.tokenPrice()  # use this later
+    [ICO.buyToken(transact={'from':b, 'value':tp}) for b in tester.accounts[1:]]
+    sold = ICO.sold()
+    print("Pre-sale sold", sold, "tokens!")
+
+    ICO.updateTokenPrice(1000)  # Bonus round over!
+
+    # You can create very powerful tests...
+    while not ICO.hardCapReached():
+
+        # Every round, buyer buys an amount of tokens between [1, softCap)
+        buyer = random.choice(tester.accounts[1:])
+        amount = random.randrange(tp, tp*ICO.softCap(), tp)
+        ICO.buyToken(transact={'from':buyer, 'value':amount})
+        print(ICO.sold() - sold, "tokens sold this round!")
+        sold = ICO.sold()  # Update for next round, and to show refunds
+
+        # Every round, seller requests a refund for all their tokens
+        seller = random.choice(tester.accounts[1:])
+        if Token.balanceOf(seller) > 0 and not ICO.hardCapReached():
+            ICO.refundToken(transact={'from':seller})
+        print(sold - ICO.sold(), "tokens refunded this round!")
