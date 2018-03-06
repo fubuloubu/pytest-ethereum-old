@@ -118,10 +118,10 @@ def test_token(tester, Token):
     assert Approval['_value'] == 10
 
 # Constants for ICO
-TOKEN_PRICE = 100  # 100 wei/token
+TOKEN_PRICE = 1000  # 100 wei/token
 HARDCAP = INITIAL_SUPPLY  # Max tokens for sale
 SOFTCAP = 10  # Min tokens for successful sale
-DURATION = 10  # active blocks
+DURATION = 100  # active blocks
 
 @pytest.fixture
 def ICO(tester, Token):
@@ -134,29 +134,19 @@ def test_ico(tester, Token, ICO):
     # NOTE: Token is not the same deployment as the one in test_token!
     assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY
 
+    # You can add accounts if you need to
+    #tester.add_account()
+
     Token.approve(ICO.address, ICO.hardCap())
     ICO.startICO()  # Let's get this party started!
 
-    # Pre-Sale!
-    tp = ICO.tokenPrice()  # use this later
-    [ICO.buyToken(transact={'from':b, 'value':tp}) for b in tester.accounts[1:]]
-    sold = ICO.sold()
-    print("Pre-sale sold", sold, "tokens!")
-
-    ICO.updateTokenPrice(1000)  # Bonus round over!
-
-    # You can create very powerful tests...
+    # You can create very powerful tests with this library
+    tp = ICO.tokenPrice()
+    sold = 0  # use this later
     while not ICO.hardCapReached():
-
         # Every round, buyer buys an amount of tokens between [1, softCap)
         buyer = random.choice(tester.accounts[1:])
-        amount = random.randrange(tp, tp*ICO.softCap(), tp)
+        amount = tp*min(random.randrange(1, ICO.softCap()),ICO.hardCap()-sold)
         ICO.buyToken(transact={'from':buyer, 'value':amount})
-        print(ICO.sold() - sold, "tokens sold this round!")
-        sold = ICO.sold()  # Update for next round, and to show refunds
-
-        # Every round, seller requests a refund for all their tokens
-        seller = random.choice(tester.accounts[1:])
-        if Token.balanceOf(seller) > 0 and not ICO.hardCapReached():
-            ICO.refundToken(transact={'from':seller})
-        print(sold - ICO.sold(), "tokens refunded this round!")
+        print(buyer, "bought", ICO.sold()-sold, "tokens this round!")
+        sold = ICO.sold()  # Update for next round
