@@ -98,14 +98,14 @@ def test_token(tester, Token):
     assert Token.balanceOf(tester.accounts[1]) == 0
     Token.transfer(tester.accounts[1], INITIAL_SUPPLY)  # Creates a log
     assert Token.balanceOf(tester.accounts[1]) == INITIAL_SUPPLY
-    # Test transfer's event
-    expected_log = Token.gen_log('Transfer', \
-            args={
-                '_from': tester.accounts[0],
-                '_to': tester.accounts[1],
-                '_value': INITIAL_SUPPLY
-            }
+    # Create a Transfer log to check against
+    expected_log = Token.gen_log('Transfer',
+            # Below is all the members of the event
+            _from=tester.accounts[0],
+            _to=tester.accounts[1],
+            _value=INITIAL_SUPPLY
         )
+    # Test transfer's event
     assert Token.new_logs[-1] == expected_log
 
     #Approval

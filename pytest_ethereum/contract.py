@@ -66,10 +66,10 @@ class ContractInstance:
         """Returns all the event logs added for this contract"""
         return self._process_logs(self.__filter.get_all_entries())
 
-    def gen_log(self, event, args={}):
+    def gen_log(self, eventname, **kwargs):
         new_log = {}
-        new_log['event'] = event
-        new_log['args'] = args
+        new_log['event'] = eventname
+        new_log['args'] = kwargs
         # NOTE: Don't need the rest of the stuff to generate this class
         return Log(new_log)
 
