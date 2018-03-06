@@ -25,7 +25,10 @@ def get_assets(filename):
         filtered_interface = dict()
         for member in interface.keys():
             if member == 'abi':
-                filtered_interface['abi'] = interface[member]
+                abi = interface[member]
+                if isinstance(abi, str):
+                    abi = json.loads(abi)  # No idea why solidity does this...
+                filtered_interface['abi'] = abi
             # Standardize names to Web3.py expected interfaces
             if member == 'bin':
                 filtered_interface['bytecode'] = interface[member]

@@ -1,7 +1,8 @@
 from web3 import Web3
 from web3.contract import ImplicitContract
 
-from .utils import clean_modifiers
+from .log import Log
+from .utils import clean_modifiers, get_event_processors
 
 
 class ContractInstance:
@@ -14,6 +15,7 @@ class ContractInstance:
                 ContractFactoryClass=ImplicitContract)
         # Register new filter to watch for logs from this instance's address
         self.__filter = self.__w3.eth.filter({'address': self.__address})
+        self.__event_processors = get_event_processors(interface['abi'])
 
     def __getattr__(self, name):
         """Delegates to either specialized methods or instance ABI"""
@@ -45,14 +47,31 @@ class ContractInstance:
         """Check if this contract currently has code (usually indicating suicide)"""
         return self.codesize != 0
 
+    def _process_logs(self, logs):
+        processed_logs = []
+        for log in logs:
+            log_signature = log['topics'][0]
+            if log_signature in self.__event_processors.keys():
+                p_log = self.__event_processors[log_signature](log)
+                processed_logs.append(Log(p_log))
+        return processed_logs
+
     @property
     def new_logs(self):
         """Returns all the event logs added since last checked for this contract"""
-        return self.__filter.get_new_entries()
+        return self._process_logs(self.__filter.get_new_entries())
 
     @property
     def all_logs(self):
-        return self.__filter.get_all_entries()
+        """Returns all the event logs added for this contract"""
+        return self._process_logs(self.__filter.get_all_entries())
+
+    def gen_log(self, event, args={}):
+        new_log = {}
+        new_log['event'] = event
+        new_log['args'] = args
+        # NOTE: Don't need the rest of the stuff to generate this class
+        return Log(new_log)
 
 
 class ContractFactory:

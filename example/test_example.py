@@ -92,12 +92,22 @@ def Token(tester):
 
 def test_token(tester, Token):
     # You can do all of these with the your own fixtures too!
+
+    # Test Token.transfer()
     assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY
     assert Token.balanceOf(tester.accounts[1]) == 0
-    Token.transfer(tester.accounts[1], INITIAL_SUPPLY)
+    Token.transfer(tester.accounts[1], INITIAL_SUPPLY)  # Creates a log
     assert Token.balanceOf(tester.accounts[1]) == INITIAL_SUPPLY
-    # Test these events:
-    #Transfer
+    # Test transfer's event
+    expected_log = Token.gen_log('Transfer', \
+            args={
+                '_from': tester.accounts[0],
+                '_to': tester.accounts[1],
+                '_value': INITIAL_SUPPLY
+            }
+        )
+    assert Token.new_logs[-1] == expected_log
+
     #Approval
 
 # Constants for ICO
