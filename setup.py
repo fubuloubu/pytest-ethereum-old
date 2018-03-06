@@ -7,7 +7,7 @@ def read_md(fname):
 
 setup(
     name="pytest-ethereum",
-    version='0.1.0a4',
+    version='0.1.0a5',
     description='py.test plugin for testing Ethereum smart contracts',
     license='MIT',
     #long_description=read_md('README.md'),
