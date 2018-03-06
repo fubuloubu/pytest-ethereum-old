@@ -12,3 +12,7 @@ class Log:
             if v != other._args[k]:
                 return False
         return True
+
+    def __getitem__(self, key):
+        #TODO Throw if key not in _args
+        return self._args[key]
