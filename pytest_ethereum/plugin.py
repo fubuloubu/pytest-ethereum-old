@@ -11,6 +11,7 @@ def pytest_addoption(parser):
     group = parser.getgroup('ethereum', 'ethereum testing support')
     group.addoption('--assets-file', action='store', default=None, metavar='path',
             help='assets file for coverage, default: none')
+    # TODO: # of Accounts must be set at startup
 
 
 # Load assets file into memory
