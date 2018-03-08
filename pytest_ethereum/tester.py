@@ -41,9 +41,4 @@ class Tester:
     def mine_blocks(self, number=1):
         self.__t.mine_blocks(number)
 
-    def add_account(self):
-        self.__w3.personal.newAccount(None)
-        #TODO Hack - this guy needs some Eth!
-        self.__t.mine_block(coinbase=self.accounts[-1])
-
     #TODO Evaluate if additional logging methods are necessary
