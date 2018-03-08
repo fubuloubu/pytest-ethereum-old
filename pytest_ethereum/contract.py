@@ -14,7 +14,11 @@ class ContractInstance:
         self.__instance = self.__w3.eth.contract(self.__address, **interface,
                 ContractFactoryClass=ImplicitContract)
         # Register new filter to watch for logs from this instance's address
-        self.__filter = self.__w3.eth.filter({'address': self.__address})
+        self.__filter = self.__w3.eth.filter({
+                # Include events from the deployment stage
+                'fromBlock': self.__w3.eth.blockNumber - 1,
+                'address': self.__address
+            })
         self.__event_processors = get_event_processors(interface['abi'])
 
     def __getattr__(self, name):
