@@ -134,9 +134,6 @@ def test_ico(tester, Token, ICO):
     # NOTE: Token is not the same deployment as the one in test_token!
     assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY
 
-    # You can add accounts if you need to
-    #tester.add_account()
-
     Token.approve(ICO.address, ICO.hardCap())
     ICO.startICO()  # Let's get this party started!
 
