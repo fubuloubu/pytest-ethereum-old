@@ -1,5 +1,5 @@
 install:
-	python setup.py install
+	pip install -e .
 
 
 # Verify our example project
