@@ -12,10 +12,8 @@ upload: install
 
 # Checks dry run, then prompts to execute
 clean:
-ifneq ($(shell git clean -xdn), )
-	@git clean -xdn
-	@read -p "Do you wish to continue? [y/N] " yn; \
-	 case $$yn in [Yy]* ) git clean -xdf;; esac
-else
-	@echo "Nothing to clean!"
-endif
+	rm -rf build/
+	rm -rf dist/
+	rm -rf pytest_ethereum.egg-info/
+	rm -rf __pycache__/
+	rm -rf .pytest_cache/
