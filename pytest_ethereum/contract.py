@@ -98,6 +98,6 @@ class ContractFactory:
         # in order to avoid bugs when web3 processes our modifiers
         kwargs = clean_modifiers(kwargs)
 
-        tx_hash = self.__contract_factory.deploy(args=args, **kwargs)
+        tx_hash = self.__contract_factory.constructor(*args).transact(**kwargs)
         address = self.__w3.eth.getTransactionReceipt(tx_hash)['contractAddress']
         return ContractInstance(self.__w3, address, self.__interface)

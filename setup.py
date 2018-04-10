@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="pytest-ethereum",
-    version='0.1.0a7',
+    version='0.1.0a8',
     description='py.test plugin for testing Ethereum smart contracts',
     long_description='TODO',
     license='MIT',
