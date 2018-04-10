@@ -1,25 +1,20 @@
-import os
 from setuptools import setup
-
-# Utility function to read the boilerplate files
-def read_md(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
     name="pytest-ethereum",
-    version='0.1.0a6',
+    version='0.1.0a7',
     description='py.test plugin for testing Ethereum smart contracts',
+    long_description='TODO',
     license='MIT',
-    #long_description=read_md('README.md'),
     author='Bryant Eisenbach',
     author_email='bryant@dappdevs.org',
     url='https://github.com/fubuloubu/pytest-ethereum',
     python_requires='>=3.6',
     packages = ['pytest_ethereum'],
     install_requires=[
-        'pytest>=3.4.1',
+        'pytest',
         'eth-tester[pyethereum21]',  # eventually switch to py-evm backend
-        'web3>=4.0.0b11',
+        'web3>=4.1.0',
     ],
 
     # the following makes a plugin available to pytest
