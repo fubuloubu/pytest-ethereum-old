@@ -70,11 +70,11 @@ class ContractInstance:
         """Returns all the event logs added for this contract"""
         return self._process_logs(self.__filter.get_all_entries())
 
-    def gen_log(self, eventname, **kwargs):
-        #TODO Validate kwargs exactly match ABI for eventname
+    def gen_log(self, name, values):
+        #TODO Validate keys in values dict exactly match ABI for eventname
         new_log = {}
-        new_log['event'] = eventname
-        new_log['args'] = kwargs
+        new_log['event'] = name
+        new_log['args'] = values
         # Don't need the extra stuff to generate an event Log
         return Log(new_log)
 
