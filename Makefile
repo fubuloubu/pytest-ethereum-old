@@ -7,8 +7,9 @@ install:
 example:
 	py.test --assets-file example/contracts.json example/
 
-upload: install
-	python setup.py sdist upload
+upload: clean install
+	python setup.py sdist
+	twine upload dist/*
 
 # Checks dry run, then prompts to execute
 clean:
