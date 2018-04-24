@@ -83,26 +83,28 @@ INITIAL_SUPPLY = 100
 
 # You can also create your own fixtures!
 @pytest.fixture
-def Token(tester):
+def Token(t):
+    # t is an alias for tester
     args = [SYMBOL, NAME, DECIMALS, INITIAL_SUPPLY]  # for convienence
-    return tester.contracts('path/to/Token.sol').deploy(*args)
+    # t.c is an alias for tester.contracts
+    return t.c('path/to/Token.sol').deploy(*args)
 
 
-def test_token(tester, Token):
+def test_token(t, Token):
     # You can do all of these with the your own fixtures too!
 
     # Test Token.transfer()
-    assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY
-    assert Token.balanceOf(tester.accounts[1]) == 0
-    Token.transfer(tester.accounts[1], 10)  # Creates a log
-    assert Token.balanceOf(tester.accounts[0]) == INITIAL_SUPPLY - 10
-    assert Token.balanceOf(tester.accounts[1]) == 10
+    # t.a is an alias for tester.accounts
+    assert Token.balanceOf(t.a[0]) == INITIAL_SUPPLY
+    assert Token.balanceOf(t.a[1]) == 0
+    Token.transfer(t.a[1], 10)  # Creates a log
+    assert Token.balanceOf(t.a[0]) == INITIAL_SUPPLY - 10
+    assert Token.balanceOf(t.a[1]) == 10
+
     # Create a Transfer log to check against
-    expected_log = Token.gen_log('Transfer',
+    expected_log = Token.gen_log('Transfer', \
             # Below is all the members of the event
-            _from=tester.accounts[0],
-            _to=tester.accounts[1],
-            _value=10
+            {'_from': t.a[0], '_to': t.a[1], '_value': 10}
         )
     # Test transfer's event against the expected value
     assert Token.new_logs[-1] == expected_log
@@ -111,10 +113,10 @@ def test_token(tester, Token):
     assert len(Token.new_logs) == 0
 
     # You can also check individual fields
-    Token.approve(tester.accounts[2], 10)
+    Token.approve(t.a[2], 10)
     Approval = Token.new_logs[-1]
-    assert Approval['_owner'] == tester.accounts[0]
-    assert Approval['_spender'] == tester.accounts[2]
+    assert Approval['_owner'] == t.a[0]
+    assert Approval['_spender'] == t.a[2]
     assert Approval['_value'] == 10
 
 # Constants for ICO
