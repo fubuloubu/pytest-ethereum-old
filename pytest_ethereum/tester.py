@@ -27,12 +27,21 @@ class Tester:
         interface = self.__compiled_interfaces[name]
         return self.new_contract(interface)
 
+    # alias
+    def c(self, name):
+        return self.contracts(name)
+
     def new_contract(self, interface):
         return ContractFactory(self.__w3, interface)
         
     @property
     def accounts(self):
         return [Account(self.__w3, a) for a in self.__t.get_accounts()]
+
+    # Alias
+    @property
+    def a(self):
+        return self.accounts
     
     @property
     def tx_fails(self):

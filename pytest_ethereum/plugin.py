@@ -28,3 +28,8 @@ def assets(pytestconfig):
 @pytest.fixture
 def tester(assets):
     return Tester(assets)
+
+# alias fixture
+@pytest.fixture
+def t(tester):
+    return tester
