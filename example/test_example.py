@@ -102,19 +102,16 @@ def test_token(t, Token):
     assert Token.balanceOf(t.a[1]) == 10
 
     # Create a Transfer log to check against
-    expected_log = Token.gen_log('Transfer', \
+    expected_log = Token.Transfer(
             # Below is all the members of the event
             {'_from': t.a[0], '_to': t.a[1], '_value': 10}
         )
     # Test transfer's event against the expected value
-    assert Token.new_logs[-1] == expected_log
-
-    # Note: Contract.new_logs resets everytime it's polled
-    assert len(Token.new_logs) == 0
+    assert Token.logs[-1] == expected_log
 
     # You can also check individual fields
     Token.approve(t.a[2], 10)
-    Approval = Token.new_logs[-1]
+    Approval = Token.logs[-1]
     assert Approval['_owner'] == t.a[0]
     assert Approval['_spender'] == t.a[2]
     assert Approval['_value'] == 10

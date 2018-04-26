@@ -1,22 +1,24 @@
-class Log:
-    def __init__(self, _log):
-        self._event = _log['event']
-        self._args = _log['args']
+from collections import Mapping
+
+class Log(Mapping):
+    def __new__(cls, event, args):
+        obj = super().__new__(cls)
+        obj._event = event
+        obj._args = args
+        return obj
 
     def __eq__(self, other):
         if not isinstance(other, Log):
             return False
         if self._event != other._event:
             return False
-        for k, v in self._args.items():
-            if v != other._args[k]:
-                return False
-        return True
+        return self._args == other._args
+
+    def __iter__(self):
+        return iter(self._args)
+
+    def __len__(self):
+        return len(self._args)
 
     def __getitem__(self, key):
-        #TODO Throw if key not in _args
         return self._args[key]
-
-    def __repr__(self):
-        args = map(lambda a: "'{}': '{}'".format(*a), self._args.items())
-        return self._event + '(' + ', '.join(args) + ')'

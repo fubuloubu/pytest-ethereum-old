@@ -12,6 +12,14 @@ def clean_modifiers(modifiers):
     return cleaned_modifiers
 
 
+def get_event_signatures(abi_list):
+    signatures = dict()
+    for abi in abi_list:
+        if abi['type'] == 'event':
+            signatures[abi['name']] = event_abi_to_log_topic(abi)
+    return signatures
+
+
 def get_event_processors(abi_list):
     processors = dict()
     for abi in abi_list:

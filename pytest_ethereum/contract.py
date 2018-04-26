@@ -2,7 +2,11 @@ from web3 import Web3
 from web3.contract import ImplicitContract
 
 from .log import Log
-from .utils import clean_modifiers, get_event_processors
+from .utils import (
+        clean_modifiers,
+        get_event_processors,
+        get_event_signatures,
+    )
 
 
 class ContractInstance:
@@ -19,6 +23,8 @@ class ContractInstance:
                 'fromBlock': self.__w3.eth.blockNumber - 1,
                 'address': self.__address
             })
+        
+        self.__event_signatures = get_event_signatures(interface['abi'])
         self.__event_processors = get_event_processors(interface['abi'])
 
     def __getattr__(self, name):
@@ -26,10 +32,18 @@ class ContractInstance:
         if name in dir(self):
             # Specialized testing methods
             return getattr(self, name)
+        elif name in self._events:
+            return self._gen_log(name)
         else:
             # Method call of contract instance
-            #TODO: This doesn't work!
             return getattr(self.__instance, name)
+
+    @property
+    def _events(self):
+        return self.__event_signatures.keys()
+
+    def _gen_log(self, name):
+        return lambda v: Log(name, v)
 
     @property
     def address(self):
@@ -57,26 +71,13 @@ class ContractInstance:
             log_signature = log['topics'][0]
             if log_signature in self.__event_processors.keys():
                 p_log = self.__event_processors[log_signature](log)
-                processed_logs.append(Log(p_log))
+                processed_logs.append(Log(p_log['event'], p_log['args']))
         return processed_logs
 
     @property
-    def new_logs(self):
-        """Returns all the event logs added since last checked for this contract"""
-        return self._process_logs(self.__filter.get_new_entries())
-
-    @property
-    def all_logs(self):
-        """Returns all the event logs added for this contract"""
+    def logs(self):
+        """Returns all the event logs ever added for this contract"""
         return self._process_logs(self.__filter.get_all_entries())
-
-    def gen_log(self, name, values):
-        #TODO Validate keys in values dict exactly match ABI for eventname
-        new_log = {}
-        new_log['event'] = name
-        new_log['args'] = values
-        # Don't need the extra stuff to generate an event Log
-        return Log(new_log)
 
 
 class ContractFactory:
