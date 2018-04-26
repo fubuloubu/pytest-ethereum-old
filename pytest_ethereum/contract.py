@@ -87,7 +87,7 @@ class ContractFactory:
         self.__interface = interface
         self.__contract_factory = self.__w3.eth.contract(**self.__interface)
 
-    def deploy(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs):
         """Deploy a new instance of this contract"""
 
         #TODO: HACK, awaiting resolution of web3.py/#666

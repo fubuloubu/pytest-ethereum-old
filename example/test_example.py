@@ -4,13 +4,13 @@ def test_stuff(tester):
     # Get contracts via name from your assets file (e.g. 'contracts.json')
     # NOTE: When no contract from file is selected,
     #       uses file basename e.g. 'path/to/Owned.sol:Owned'
-    owned = tester.contracts('path/to/Owned.sol').deploy()
+    owned = tester.contracts('path/to/Owned.sol')()
     
     # You can specify a specific contract from the file
     timelimited_factory = tester.contracts('path/to/TimeLimited.sol:TestTimeLimited')
     # You must specify the deployment args if they exist
     # NOTE: must be supplied in abi order
-    timelimited = timelimited_factory.deploy(10)  # arg1: 10 blocks
+    timelimited = timelimited_factory(10)  # arg1: 10 blocks
 
     # You can also load and deploy a contract ad-hoc via a contract interface
     # Requires interface={'abi': [...], 'bytecode': '0x...', 'bytecode_runtime': '0x...'}
@@ -18,11 +18,11 @@ def test_stuff(tester):
     ad_hoc_factory = tester.new_contract(adhoc_interface)
     
     # You can deploy from any contract factory multiple times
-    one = ad_hoc_factory.deploy()
-    another = ad_hoc_factory.deploy()
+    one = ad_hoc_factory()
+    another = ad_hoc_factory()
     
     # Can supply transact={...} to change deployment transaction params
-    ad_hoc_a1 = ad_hoc_factory.deploy(transact={'from': tester.accounts[1]})
+    ad_hoc_a1 = ad_hoc_factory(transact={'from': tester.accounts[1]})
     
     # All contracts (generated or ad-hoc) have an address
     print("Ad-Hoc Adress is:", ad_hoc_a1.address)
@@ -87,7 +87,7 @@ def Token(t):
     # t is an alias for tester
     args = [SYMBOL, NAME, DECIMALS, INITIAL_SUPPLY]  # for convienence
     # t.c is an alias for tester.contracts
-    return t.c('path/to/Token.sol').deploy(*args)
+    return t.c('path/to/Token.sol')(*args)
 
 
 def test_token(t, Token):
@@ -126,7 +126,7 @@ DURATION = 100  # active blocks
 def ICO(tester, Token):
     # If you need to link fixtures together, you can!
     args = [TOKEN_PRICE, HARDCAP, SOFTCAP, DURATION, Token.address]
-    return tester.contracts('path/to/ICO.sol').deploy(*args)
+    return tester.contracts('path/to/ICO.sol')(*args)
 
 import random
 def test_ico(tester, Token, ICO):
