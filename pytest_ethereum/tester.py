@@ -1,7 +1,5 @@
 import pytest
 
-import time
-
 from web3 import Web3
 from web3.providers.eth_tester import EthereumTesterProvider
 
@@ -54,4 +52,4 @@ class Tester:
 
     def now(self):
         # TODO Get this from the Ethereum block timestamp
-        return time.time()
+        return self.__w3.eth.getBlock('latest')['timestamp']
