@@ -54,6 +54,8 @@ def test_stuff(tester):
     while timelimited.alive():  # This makes a call, so no transaction occurs
         tester.mine_blocks()  # mines an empty block
 
+    # You can check the current timestamp
+    assert tester.now() >= timelimited.creationTime() + timelimited.duration()
     timelimited.setExpired()
     # You can check to see if a contract still has code
     # NOTE: Implicitly calls address.codesize != 0
