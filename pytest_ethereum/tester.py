@@ -68,4 +68,4 @@ class FailureHandler:
             args[0] is TransactionFailed, \
                 "Didn't revert transaction."
         self._t.revert_to_snapshot(self._snapshot_id)
-        return True
+        return True  # return 'all good' from context
