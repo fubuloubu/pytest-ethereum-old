@@ -39,6 +39,8 @@ def test_stuff(tester):
     # Use this for asserting when a failed transaction should occur
     with tester.tx_fails:
         owned.changeOwner(tester.accounts[0])  # account 0 is no longer the owner!
+        # We can do multiple failures in here...
+        owned.changeOwner(tester.accounts[2])  # account 2 isn't either
     
     # You can supply optional transaction params
     owned.changeOwner(tester.accounts[0],
