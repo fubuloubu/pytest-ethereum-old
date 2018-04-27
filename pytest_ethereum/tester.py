@@ -14,9 +14,10 @@ class Tester:
     def __init__(self, compiled_interfaces):
         self.__t = EthereumTester()
         self.__w3 = Web3(EthereumTesterProvider(self.__t))
+
         # Empty by default, but can be set on initialization
         self.__compiled_interfaces = compiled_interfaces
-        
+
         # TODO Set starting balance for all accounts to something very high
         #      and blk gas limit for chain to something approaching average
 
