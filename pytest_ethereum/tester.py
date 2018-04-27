@@ -46,7 +46,7 @@ class Tester:
     
     @property
     def tx_fails(self):
-        return pytest.raises(TransactionFailed)
+        return FailureHandler(self.__t)
 
     def mine_blocks(self, number=1):
         self.__t.mine_blocks(number)
@@ -54,3 +54,18 @@ class Tester:
     def now(self):
         # TODO Get this from the Ethereum block timestamp
         return self.__w3.eth.getBlock('latest')['timestamp']
+
+class FailureHandler:
+    def __init__(self, eth_tester):
+        self._t = eth_tester
+
+    def __enter__(self):
+        self._snapshot_id = self._t.take_snapshot()
+        return self._snapshot_id
+        
+    def __exit__(self, *args):
+        assert len(args) > 0 and \
+            args[0] is TransactionFailed, \
+                "Didn't revert transaction."
+        self._t.revert_to_snapshot(self._snapshot_id)
+        return True
