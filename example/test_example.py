@@ -37,10 +37,14 @@ def test_stuff(tester):
     assert owned.owner() == tester.accounts[1]  # No transaction here
     
     # Use this for asserting when a failed transaction should occur
+    starting_balance = tester.accounts[0].balance
     with tester.tx_fails:
         owned.changeOwner(tester.accounts[0])  # account 0 is no longer the owner!
         # We can do multiple failures in here...
         owned.changeOwner(tester.accounts[2])  # account 2 isn't either
+
+    # No transactions were committed for these failures
+    assert starting_balance == tester.accounts[0].balance
     
     # You can supply optional transaction params
     owned.changeOwner(tester.accounts[0],
