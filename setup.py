@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="pytest-ethereum",
-    version='0.1.0a15',
+    version='0.1.0a16',
     description='py.test plugin for testing Ethereum smart contracts',
     long_description='TODO',
     license='MIT',
@@ -13,8 +13,8 @@ setup(
     packages = ['pytest_ethereum'],
     install_requires=[
         'pytest',
-        'eth-tester[pyethereum21]',  # eventually switch to py-evm backend
-        'web3>=4.2.0',
+        'eth-tester[py-evm]',
+        'web3',
     ],
 
     # the following makes a plugin available to pytest
