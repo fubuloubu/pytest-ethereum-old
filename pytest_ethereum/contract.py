@@ -15,8 +15,7 @@ class ContractInstance:
     def __init__(self, w3: Web3, address, interface):
         self.__w3 = w3
         self.__address = address
-        self.__instance = self.__w3.eth.contract(self.__address, **interface,
-                ContractFactoryClass=ImplicitContract)
+        self.__instance = ImplicitContract(self.__w3.eth.contract(self.__address, **interface))
         # Register new filter to watch for logs from this instance's address
         self.__filter = self.__w3.eth.filter({
                 # Include events from the deployment stage
@@ -90,14 +89,14 @@ class ContractFactory:
     def __call__(self, *args, **kwargs):
         """Deploy a new instance of this contract"""
 
-        #TODO: HACK, awaiting resolution of web3.py/#666
-        if 'transact' in kwargs.keys():
-            kwargs['transaction'] = kwargs['transact']
-            del kwargs['transact']
-
         # Our encapsulating classes need to be evaluated here
         # in order to avoid bugs when web3 processes our modifiers
         kwargs = clean_modifiers(kwargs)
+
+        # NOTE This is hacky, filing bug
+        if 'transact' in kwargs.keys():
+            kwargs['transaction'] = kwargs['transact']
+            del kwargs['transact']
 
         tx_hash = self.__contract_factory.constructor(*args).transact(**kwargs)
         address = self.__w3.eth.getTransactionReceipt(tx_hash)['contractAddress']
