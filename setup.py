@@ -12,9 +12,9 @@ setup(
     python_requires='>=3.6',
     packages = ['pytest_ethereum'],
     install_requires=[
-        'pytest',
-        'eth-tester[py-evm]',
-        'web3',
+        'pytest>=3.5.1,<3.6.0',
+        'eth-tester[py-evm]>=0.1.0-beta.26,<0.2.0',
+        'web3>=4.2.1,<4.3.0',
     ],
 
     # the following makes a plugin available to pytest
