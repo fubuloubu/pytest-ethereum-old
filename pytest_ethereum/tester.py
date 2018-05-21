@@ -18,9 +18,6 @@ class Tester:
         # Empty by default, but can be set on initialization
         self.__compiled_interfaces = compiled_interfaces
 
-        # TODO Set starting balance for all accounts to something very high
-        #      and blk gas limit for chain to something approaching average
-
     def contracts(self, name):
         if ':' not in name:
             # If you don't specify which contract in file, use filebase
