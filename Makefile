@@ -1,15 +1,15 @@
 install:
 	pip install -e .
 
-test:
+test: clean
 	py.test tests/
 
 # Verify our example project
 .PHONY: example
-example:
+example: install
 	py.test --assets-file example/contracts.json example/
 
-upload: clean install
+upload: test example
 	python setup.py sdist
 	twine upload dist/*
 
