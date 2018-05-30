@@ -55,7 +55,12 @@ class Tester:
 
     def now(self):
         # TODO Get this from the Ethereum block timestamp
-        return self.__w3.eth.getBlock('latest')['timestamp']
+        return self.__w3.eth.getBlock('pending')['timestamp']
+
+    @property
+    def eth(self):
+        # Return the w3 eth API
+        return self.__w3.eth
 
 class FailureHandler:
     def __init__(self, eth_tester):
