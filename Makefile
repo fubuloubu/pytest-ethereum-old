@@ -1,6 +1,8 @@
 install:
 	pip install -e .
 
+test:
+	py.test tests/
 
 # Verify our example project
 .PHONY: example
