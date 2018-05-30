@@ -11,9 +11,14 @@ from .contract import ContractFactory
 
 
 class Tester:
-    def __init__(self, compiled_interfaces):
+    def __init__(self, compiled_interfaces={}):
         self.__t = EthereumTester()
         self.__w3 = Web3(EthereumTesterProvider(self.__t))
+
+        # No gas costs for transactions
+        def zero_gas_price_strategy(web3, transaction_params=None):
+            return 0 # zero gas price makes testing simpler.
+        self.__w3.eth.setGasPriceStrategy(zero_gas_price_strategy)
 
         # Empty by default, but can be set on initialization
         self.__compiled_interfaces = compiled_interfaces

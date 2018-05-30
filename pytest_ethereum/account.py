@@ -9,7 +9,7 @@ class Account(str):
         return obj
 
     # Send Ether
-    def send(self, address, amount):
+    def transfer(self, address, amount):
         self._w3.eth.sendTransaction({'to': address, 'from': self._address, 'value': amount})
 
     @property

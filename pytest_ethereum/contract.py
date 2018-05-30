@@ -101,3 +101,6 @@ class ContractFactory:
         tx_hash = self.__contract_factory.constructor(*args).transact(**kwargs)
         address = self.__w3.eth.getTransactionReceipt(tx_hash)['contractAddress']
         return ContractInstance(self.__w3, address, self.__interface)
+
+    def __getattr__(self, name):
+        return getattr(self.__contract_factory, name)
