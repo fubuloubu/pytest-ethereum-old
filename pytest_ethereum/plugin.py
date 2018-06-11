@@ -1,6 +1,6 @@
 import pytest
 
-from .assets import get_assets
+from .package import load_package
 from .tester import Tester
 
 
@@ -9,24 +9,24 @@ def pytest_addoption(parser):
     """Add options for contract assets file handling"""
 
     group = parser.getgroup('ethereum', 'ethereum testing support')
-    group.addoption('--assets-file', action='store', default=None, metavar='path',
-            help='assets file for coverage, default: none')
+    group.addoption('--package-file', action='store', default=None, metavar='path',
+            help='ERC190 Package Filename, default: none')
 
 
 # Load assets file into memory
 @pytest.fixture(scope='session')
-def assets(pytestconfig):
-    assets = {}
-    assets_file = pytestconfig.option.assets_file
-    if assets_file:
-        assets = get_assets(assets_file)
-    return assets
+def package(pytestconfig):
+    package = {}
+    package_file = pytestconfig.option.package_file
+    if package_file:
+        package = load_package(package_file)
+    return package
 
 
 # Fixture is initialized from default for every test
 @pytest.fixture
-def tester(assets):
-    return Tester(assets)
+def tester(package):
+    return Tester(package)
 
 # alias fixture
 @pytest.fixture

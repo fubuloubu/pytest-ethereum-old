@@ -2,14 +2,14 @@ import json
 from os.path import isfile as file_exists
 
 
-def get_assets(filename):
+def load_package(filename):
 
     assert file_exists(filename), \
             "Filename '{}' doesn't exist!".format(filename)
     with open(filename, 'r') as f:
         compiled_interfaces = json.loads(f.read())['contracts']
     
-    # compiled assets JSON object should be structured like:
+    # compiled JSON package object should be structured like:
     # 'contracts' : {
     #   'Contract1' : {
     #           'abi' : ..., 

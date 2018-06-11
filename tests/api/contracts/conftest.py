@@ -1,10 +1,10 @@
 import pytest
 
-from pytest_ethereum.assets import get_assets
+from pytest_ethereum.package import load_package
 from pytest_ethereum.tester import Tester
 
 
-assets = {
+package = {
   "contracts": {
     "path/to/Owned.sol:Owned": {
       "bin-runtime": "60606040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680638da5cb5b14610051578063a6f9dae1146100a6575b600080fd5b341561005c57600080fd5b6100646100df565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156100b157600080fd5b6100dd600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610104565b005b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561015f57600080fd5b806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550505600a165627a7a72305820880a4056fab249ea33a384814995ed65839292e7edf737e2082462ab370b372a0029",
@@ -32,4 +32,4 @@ assets = {
 
 @pytest.fixture
 def t():
-    return Tester(assets)
+    return Tester(package)

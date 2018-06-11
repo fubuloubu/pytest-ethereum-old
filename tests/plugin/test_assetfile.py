@@ -11,7 +11,7 @@ def test_MyTest(tester):
 
 
 @pytest.mark.xfail
-def test_NoAssets(testdir):
+def test_NoPackage(testdir):
     testdir.makepyfile(testcase)
     # Works without one
     result = testdir.runpytest()
@@ -22,35 +22,35 @@ def test_NoAssets(testdir):
 def test_BadReference(testdir, testcase):
     testdir.makepyfile(testcase)
     # If provided a file that does not exist, should fail
-    testdir.parseconfig('--assets-file', 'does-not-exist.json')
+    testdir.parseconfig('--package-file', 'does-not-exist.json')
     result = testdir.runpytest()
     result.assert_outcomes(error=1)
 
 
 @pytest.fixture
-def run_assetsfile(testdir, testcase):
-    def run_assetsfile(assets=None):
+def run_packagefile(testdir, testcase):
+    def run_packagefile(package=None):
         testdir.makepyfile(testcase)
-        assets_file = testdir.makefile('.json', contracts=json.dumps(assets))
-        return testdir.runpytest(assets_file=assets_file)
+        package_file = testdir.makefile('.json', contracts=json.dumps(package))
+        return testdir.runpytest(package_file=package_file)
 
     # Return function as fixture
-    return run_assetsfile
+    return run_packagefile
 
 
 @pytest.mark.xfail
-def test_BadAssetsFile(run_assetsfile):
+def test_BadPackageFile(run_packagefile):
     # Cannot supply a badly formatted file
-    result = run_assetsfile({
+    result = run_packagefile({
             'badkey': [0, 1]
         })
     result.assert_outcomes(failed=1)
 
 
 @pytest.mark.xfail
-def test_GoodAssetsFile(run_assetsfile):
+def test_GoodPackageFile(run_packagefile):
     # Works with a well-formatted one
-    result = run_assetsfile({
+    result = run_packagefile({
             'contracts': {
                 'A': {
                     'abi': [],

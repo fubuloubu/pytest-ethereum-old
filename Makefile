@@ -7,7 +7,7 @@ test: clean
 # Verify our example project
 .PHONY: example
 example: install
-	py.test --assets-file example/contracts.json example/
+	py.test --package-file example/contracts.json example/
 
 upload: test example
 	python setup.py sdist
