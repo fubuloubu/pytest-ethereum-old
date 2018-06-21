@@ -1,5 +1,7 @@
 import pytest
 
+from ethpm.package import Package
+
 from web3 import Web3
 from web3.providers.eth_tester import EthereumTesterProvider
 
@@ -11,7 +13,7 @@ from .contract import ContractFactory
 
 
 class Tester:
-    def __init__(self, compiled_interfaces={}):
+    def __init__(self, package: Package):
         self.__t = EthereumTester()
         self.__w3 = Web3(EthereumTesterProvider(self.__t))
 
@@ -20,14 +22,15 @@ class Tester:
             return 0 # zero gas price makes testing simpler.
         self.__w3.eth.setGasPriceStrategy(zero_gas_price_strategy)
 
-        # Empty by default, but can be set on initialization
-        self.__compiled_interfaces = compiled_interfaces
+        # Set the package (empty by default)
+        self.__package = package
+        self.__package.set_default_w3(self.__w3)
 
     def contracts(self, name):
         if ':' not in name:
             # If you don't specify which contract in file, use filebase
             name += ':{}'.format(name.split('/')[-1].split('.')[0])
-        interface = self.__compiled_interfaces[name]
+        interface = self.__package.get_contract_type(name)
         return self.new_contract(interface)
 
     # alias

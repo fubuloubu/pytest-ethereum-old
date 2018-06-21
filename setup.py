@@ -15,6 +15,7 @@ setup(
         'pytest>=3.6.1,<4.0.0',
         'eth-tester[py-evm]>=0.1.0-beta.26,<0.2.0',
         'web3>=4.3.0,<5.0.0',
+        'py-ethpm>=0.1.0-alpha.13,<0.2.0',
     ],
 
     # the following makes a plugin available to pytest

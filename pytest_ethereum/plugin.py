@@ -1,6 +1,7 @@
 import pytest
 
-from .package import load_package
+from ethpm.package import Package
+
 from .tester import Tester
 
 
@@ -16,10 +17,10 @@ def pytest_addoption(parser):
 # Load assets file into memory
 @pytest.fixture(scope='session')
 def package(pytestconfig):
-    package = {}
+    package = None
     package_file = pytestconfig.option.package_file
     if package_file:
-        package = load_package(package_file)
+        package = Package.from_file(package_file)
     return package
 
 
