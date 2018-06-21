@@ -10,7 +10,6 @@ def test_MyTest(tester):
     """
 
 
-@pytest.mark.xfail
 def test_NoPackage(testdir):
     testdir.makepyfile(testcase)
     # Works without one
@@ -18,7 +17,6 @@ def test_NoPackage(testdir):
     result.assert_outcomes(passed=1)  # No failures
 
 
-@pytest.mark.xfail
 def test_BadReference(testdir, testcase):
     testdir.makepyfile(testcase)
     # If provided a file that does not exist, should fail
@@ -29,7 +27,7 @@ def test_BadReference(testdir, testcase):
 
 @pytest.fixture
 def run_packagefile(testdir, testcase):
-    def run_packagefile(package=None):
+    def run_packagefile(package):
         testdir.makepyfile(testcase)
         package_file = testdir.makefile('.json', contracts=json.dumps(package))
         return testdir.runpytest(package_file=package_file)
@@ -38,7 +36,6 @@ def run_packagefile(testdir, testcase):
     return run_packagefile
 
 
-@pytest.mark.xfail
 def test_BadPackageFile(run_packagefile):
     # Cannot supply a badly formatted file
     result = run_packagefile({
@@ -47,11 +44,10 @@ def test_BadPackageFile(run_packagefile):
     result.assert_outcomes(failed=1)
 
 
-@pytest.mark.xfail
 def test_GoodPackageFile(run_packagefile):
     # Works with a well-formatted one
     result = run_packagefile({
-            'contracts': {
+            'contract_types': {
                 'A': {
                     'abi': [],
                     'bin': '0x',
