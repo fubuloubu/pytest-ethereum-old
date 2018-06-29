@@ -1,7 +1,8 @@
-install:
+install: clean
+	-pip freeze | xargs pip uninstall -y
 	pip install -e .
 
-test: clean
+test: install
 	py.test tests/
 
 # Verify our example project
@@ -10,6 +11,7 @@ example: install
 	py.test --package-file example/contracts.json example/
 
 upload: test example
+	pip install twine
 	python setup.py sdist
 	twine upload dist/*
 
