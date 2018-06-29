@@ -13,6 +13,7 @@ pip install pytest-ethereum  # python 3.6+
 Step 2: Compile your contracts into a package (soon to be ethPM-compliant)
 ```bash
 solc --combined-json abi,bin,bin-runtime contracts/ > contracts.json
+```
 
 Step 3. Execute your test suite (make sure to import your package file!)
 ```bash
