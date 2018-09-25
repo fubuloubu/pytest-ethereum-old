@@ -30,18 +30,10 @@ def load_package(filename):
                     abi = json.loads(abi)  # No idea why solidity does this...
                 filtered_interface['abi'] = abi
             # Standardize names to Web3.py expected interfaces
-            if member == 'bin':
+            if member == 'bin' or member == 'bytecode':
                 filtered_interface['bytecode'] = interface[member]
-            else:
-                assert 'bytecode' in interface.keys(), \
-                        "One of 'bin' or 'bytecode' is required"
-                filtered_interface['bytecode'] = interface['bytecode']
-            if member == 'bin-runtime':
+            if member == 'bin-runtime' or member == 'bytecode_runtime':
                 filtered_interface['bytecode_runtime'] = interface[member]
-            else:
-                assert 'bytecode_runtime' in interface.keys(), \
-                        "One of 'bin-runtime' or 'bytecode_runtime' is required"
-                filtered_interface['bytecode_runtime'] = interface['bytecode_runtime']
 
         # Check for required interfaces
         for member in required_members:
