@@ -32,8 +32,16 @@ def load_package(filename):
             # Standardize names to Web3.py expected interfaces
             if member == 'bin':
                 filtered_interface['bytecode'] = interface[member]
+            else:
+                assert 'bytecode' in interface.keys(), \
+                        "One of 'bin' or 'bytecode' is required"
+                filtered_interface['bytecode'] = interface['bytecode']
             if member == 'bin-runtime':
                 filtered_interface['bytecode_runtime'] = interface[member]
+            else:
+                assert 'bytecode_runtime' in interface.keys(), \
+                        "One of 'bin-runtime' or 'bytecode_runtime' is required"
+                filtered_interface['bytecode_runtime'] = interface['bytecode_runtime']
 
         # Check for required interfaces
         for member in required_members:
